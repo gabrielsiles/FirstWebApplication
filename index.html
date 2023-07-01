@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soumission d'assurance automobile</title>
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <header>
+         <h1>Votre estimateur d'assurance auto</h1>
+    </header>
+    <div class="form-box">  
+        <form id="formulaire-assurance">
+            <h2>Faites votre réclamation</h2>
+            <label for="genre">Quel est votre genre?</label>
+            <select id="genre">
+                <option value="">Sélectionnez...</option>
+                <option value="homme">Homme</option>
+                <option value="femme">Femme</option>
+                <option value="non-binaire">Non-binaire</option>
+            </select>
+            <p id="genre-erreur" style="display: none"></p>
+            <label for="age">Quel est votre âge?</label>
+            <input type="number" id="age">
+            <p id="age-erreur" style="display: none"></p>
+        
+            <label for="valeur-auto">Quelle est la valeur d'achat de votre véhicule?</label>
+            <input type="number" id="valeur-auto">
+            <p id="erreur-valeur-auto" style="display: none"></p>
+    
+            <label for="annee-auto">Quelle est l'année de fabrication de votre véhicule?</label>
+            <input type="number" id="annee-auto">
+            <p id="erreur-annee-auto" style="display: none"></p>
+    
+            <label for="reclamations">Avez-vous fait des réclamations d'assurance auto dans les 6 dernières années?</label>
+                <select id="reclamations">
+                    <option value="">Sélectionnez...</option>
+                    <option value="oui">Oui</option>
+                    <option value="non">Non</option>
+                </select>
+                <p id="reclamations-erreur" style="display: none"></p>
+    
+            <div id="reclamation-details" style="display: none;">
+                <label for="nombre-reclamations">Combien de réclamations avez-vous faites?</label>
+                <input type="number" id="nombre-reclamations">
+                <p id="erreur-nombre-reclamations" style="display: none"></p> 
+                <div id="reclamation-montants">
+                    <!-- Les champs pour le montant de chaque réclamation seront ajoutés ici -->
+                </div>
+                
+            </div>
+            <!-- Plus de champs ici -->
+            <button class="button" type="submit">Calculer l'assurance</button>
+        </form>
+    </div>
+    
+
+
+
+
+
+    <script>
+        // Elements du formulaire
+        const form = document.getElementById('formulaire-assurance');
+        const genre = document.getElementById('genre');
+        const age = document.getElementById('age');
+        const valeur_auto = document.getElementById('valeur-auto');
+        const annee_auto = document.getElementById('annee-auto');
+        const element_reclamations = document.getElementById('reclamations');
+        const details_reclamation = document.getElementById('reclamation-details');
+        const nombre_reclamations = document.getElementById('reclamation-montants');
+        const element_nombre_reclamations = document.getElementById('nombre-reclamations');
+        const nombre_de_reclamations = document.getElementById('nombre-reclamations').value;
+        let total_reclam = 0;
+
+        // Eléments d'erreur
+        const genre_erreur = document.getElementById('genre-erreur');
+        const erreur_age = document.getElementById('age-erreur');
+        const erreur_valeur_auto = document.getElementById('erreur-valeur-auto');
+        const erreur_annee_auto = document.getElementById('erreur-annee-auto');
+        const reclamations_erreur = document.getElementById('reclamations-erreur');
+        const erreur_nombre_reclamations = document.getElementById('erreur-nombre-reclamations');
+
+        // Les fonctions et les écouteurs d'événements 
+        function validerGenre(){
+            if (genre.value === ""){
+                genre_erreur.innerHTML = "Veuillez entrer votre genre!";
+                genre_erreur.style.display = "block";
+                genre.style.border = "2px solid red";
+                return false;
+            } else {
+                genre_erreur.style.display = "none";
+                genre.style.border = "2px solid green";
+                return true;
+            }
+        }
+         
+        function validerAge() {
+            if (age.value === ""){
+                erreur_age.innerHTML = "Valeur manquante!";
+                erreur_age.style.display = "block";
+                age.style.border = "2px solid red"; 
+                return false;
+            }
+            if (age.value < 0) {
+                erreur_age.innerHTML = "L'âge doit être plus grand que 0!";
+                erreur_age.style.display = "block";
+                age.style.border = "2px solid red";
+                return false;
+            } else {
+                erreur_age.style.display = "none";
+                age.style.border = "2px solid green";
+                return true;    
+            }
+        }
+
+        function validerValeurAuto(){
+            if (valeur_auto.value === ""){
+                erreur_valeur_auto.innerHTML = "Valeur manquante!";
+                erreur_valeur_auto.style.display = "block";
+                valeur_auto.style.border = "2px solid red";
+                return false;
+            }
+            if (valeur_auto.value < 0){
+                erreur_valeur_auto.innerHTML = "La valeur de la voiture doit être plus grand que 0!";
+                erreur_valeur_auto.style.display = "block";
+                valeur_auto.style.border = "2px solid red";
+                return false;
+            } else {
+                erreur_valeur_auto.style.display = "none";
+                valeur_auto.style.border = "2px solid green";
+                return true;
+            }
+        }
+
+        function validerAnneAuto(){
+            if(annee_auto.value === ""){
+                erreur_annee_auto.innerHTML = "Valeur manquante!";
+                erreur_annee_auto.style.display = "block";
+                annee_auto.style.border = "2px solid red";
+                return false;
+            }
+            if (annee_auto.value < 1886 || annee_auto.value > 2023) {
+                erreur_annee_auto.innerHTML = "L'année doit être comprise entre 1886 et 2023!";
+                erreur_annee_auto.style.display = "block";
+                annee_auto.style.border = "2px solid red";
+                return false;
+            } else {
+                erreur_annee_auto.style.display = "none";
+                annee_auto.style.border = "2px solid green";
+                return true;
+            }
+        }
+
+        function validerReclamation(){
+            if (reclamations.value === ""){
+                reclamations_erreur.innerHTML = "Veuillez entrer oui ou non!"
+                reclamations_erreur.style.display = "block";
+                reclamations.style.border = "2px solid red";
+                return false;
+            } else {
+                reclamations_erreur.style.display = "none";
+                reclamations.style.border = "2px solid green";
+                return true;
+            }
+        }
+
+        function validerNbReclamation(){
+            const erreur_nombre_reclamations = document.getElementById('erreur-nombre-reclamations');
+            if (element_nombre_reclamations.value === ""){
+                erreur_nombre_reclamations.innerHTML = "Veuillez entrer un nombre!";
+                erreur_nombre_reclamations.style.display = "block";
+                nombre_reclamations.style.border = "2px solid red";
+                return false;
+            }
+            if (element_nombre_reclamations.value < 0){
+                erreur_nombre_reclamations.innerHTML = "Le nombre de réclamations ne peut pas être négatif!";
+                erreur_nombre_reclamations.style.display = "block";
+                nombre_reclamations.style.border = "2px solid red";
+                return false;
+            } else {
+                erreur_nombre_reclamations.style.display = "none";
+                nombre_reclamations.style.border = "2px solid green";
+                return true;
+            }
+        }
+
+
+
+        
+        document.getElementById('genre').addEventListener('change', validerGenre);
+        document.getElementById('age').addEventListener('change', validerAge);
+        document.getElementById('valeur-auto').addEventListener('change',validerValeurAuto);
+        document.getElementById('annee-auto').addEventListener('change',validerAnneAuto);
+        document.getElementById('reclamations').addEventListener('change', validerReclamation);
+        document.getElementById('nombre-reclamations').addEventListener('change', validerNbReclamation);
+
+
+        function validerMontantReclamations() {
+            let sontReclamationsValides = true;
+            let nombre_de_reclamations = parseInt(document.getElementById('nombre-reclamations').value); 
+
+            // Réinitialisez le total des réclamations avant de commencer le calcul
+            total_reclam = 0;
+
+            for (let i = 0; i < nombre_de_reclamations; i++) {
+
+                const montantReclamation = document.getElementById('reclamation' + (i+1));
+                const erreurReclamation = document.getElementById('erreur-reclamation' + (i+1));
+
+                let montant = Number(montantReclamation.value);
+                console.log(montant)
+
+                if (montantReclamation.value === "" || montant.value < 0) {
+                    sontReclamationsValides = false;
+                    erreurReclamation.style.display = "block";
+                    if (montantReclamation.value === "") {
+                        erreurReclamation.innerHTML = "Valeur manquante";
+                    } else {
+                        erreurReclamation.innerHTML = "Le montant de la réclamation doit être positif";
+                    }
+                } else {
+                    erreurReclamation.style.display = "none";
+
+                    // Ajoutez le montant de la réclamation au total des réclamations
+                    total_reclam += montant;
+                    console.log(total_reclam)
+                }
+            }
+            return sontReclamationsValides;
+        }
+
+
+    
+    
+    element_reclamations.addEventListener('change', function() {
+        if (reclamations.value === 'oui') {
+            details_reclamation.style.display = 'block';
+        } else {
+            details_reclamation.style.display = 'none';
+        }
+    
+    });
+    
+    element_nombre_reclamations.addEventListener('change', function() {
+        const nombre_de_reclamations = element_nombre_reclamations.value;
+        nombre_reclamations.innerHTML = '';
+
+        for (let i = 0; i < nombre_de_reclamations; i++) {
+            const div = document.createElement('div');
+            div.className = 'champ-entree'; 
+            
+            const etiquette = document.createElement('label');
+            etiquette.textContent = 'Pour la réclamation #' + (i + 1) + ', quel montant avez-vous réclamé?';
+            div.append(etiquette);
+            
+            const saisie = document.createElement('input');
+            saisie.type = 'number';
+            saisie.id = 'reclamation' + (i + 1);  // Ajout de l'id ici
+            div.append(saisie);
+
+            const erreur_reclamation = document.createElement('p');
+            erreur_reclamation.id = 'erreur-reclamation' + (i + 1);
+            erreur_reclamation.style.display = "none";
+            div.append(erreur_reclamation);
+
+            nombre_reclamations.append(div);
+
+            saisie.addEventListener('change', function(e) {
+                if (e.target.value === "" || e.target.value === null) {
+                    erreur_reclamation.innerHTML = "Valeur manquante!";
+                    erreur_reclamation.style.display = "block";
+                } else if (e.target.value < 0) {
+                    erreur_reclamation.innerHTML = "Le montant de la réclamation ne peut pas être négatif!";
+                    erreur_reclamation.style.display = "block";
+                } else {
+                    erreur_reclamation.style.display = "none";
+                }
+            });
+        }
+    });
+
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const estGenreValide = validerGenre();
+        const estAgeValide = validerAge();
+        const estValeurAutoValide = validerValeurAuto();
+        const estAnneAutoValide = validerAnneAuto();
+        const estReclamationValide = validerReclamation();
+        let estNbReclamationValide = true;
+        let sontReclamationsValides = true;
+        let assurance = 0;
+        
+    
+        
+        
+
+        function calculerAssurance() {
+            let montant_base = 0;
+            let valeur_auto_num = parseFloat(valeur_auto.value);
+
+            if ((genre.value === "homme" || genre.value === "non-binaire") && age.value < 25) {
+                montant_base = 0.05 * valeur_auto_num;
+            } else if (age.value >= 75) {
+                montant_base = 0.04 * valeur_auto_num;
+            } else {
+                montant_base = 0.02 * valeur_auto_num;
+            }
+
+            assurance = montant_base + (350 * parseInt(nombre_de_reclamations));
+            if (total_reclam > 25000) {
+                assurance += 500;
+            }
+            return assurance;
+        }
+
+        if(reclamations.value === 'oui') {
+            estNbReclamationValide = validerNbReclamation();
+            sontReclamationsValides = validerMontantReclamations();
+        }
+
+        if(!estGenreValide || !estAgeValide || !estValeurAutoValide || !estAnneAutoValide || !estReclamationValide || !estNbReclamationValide || !sontReclamationsValides) {
+            return false;
+        }
+
+
+        assurance = calculerAssurance();
+        sessionStorage.setItem('assurance', assurance);
+
+
+        // Appeler la fonction de redirection après la validation
+        redirection();
+        
+    });  
+
+    
+
+    function redirection() {
+        // N'est pas illigible
+        const nombre_de_reclamations = document.getElementById('nombre-reclamations').value;
+        console.log(total_reclam)
+        if ((genre.value === "femme" && age.value < 16) || (genre.value=== "homme" && age.value < 18) || (genre.value === "non-binaire" && age.value < 18)
+            || age.value >= 100 || (2023 - annee_auto.value) > 25 || valeur_auto.value > 100000 || parseInt(nombre_de_reclamations) > 4 || total_reclam > 35000) {
+            assurance = 0;
+            sessionStorage.setItem('assurance', assurance);
+            window.location.href = "resultat.html"
+        } else { // Est illigible
+            
+            window.location.href = "resultat.html"
+        }
+    }    
+    </script>
+    
+</body>
+</html>

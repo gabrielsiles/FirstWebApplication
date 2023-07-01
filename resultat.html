@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Résultat soumission Assurance auto</title>
+</head>
+<body>
+        <h1 id="titre-resultat">Résultat de la Soumission</h1>
+    <div id="resultat-wrapper">
+       
+        <div id="formewrapper">
+            <div id="resultat-assurance"></div>
+            <div id="choix-soumission">
+                <br>
+                <br>
+                <label for="soumission">Voulez-vous faire une nouvelle soumission?</label>
+                <br>
+                <br>
+                <br>
+                <select id="soumission" name="soumission">
+                    <option value="non">Veuillez entrer un choix</option>
+                    
+                    <option value="non">Non</option>
+                    <option value="oui">Oui</option>
+                </select>
+                <div id="terminer-resultat"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let assurance = sessionStorage.getItem('assurance');
+        
+        function resultat () {
+            const assurance_mensuelle = parseFloat(assurance / 12).toFixed(2);
+            const assurance_annuelle = parseFloat(assurance).toFixed(2);
+            const resultat_assurance = document.querySelector('#resultat-assurance');
+                
+            if (assurance == 0) {
+                resultat_assurance.innerHTML = "Désolé, nous n'avons aucun produit à offrir pour ce profil de client.";
+            } else {
+                resultat_assurance.innerHTML = "Le prix annuel de votre soumission d'assurance est de <strong>"+ assurance_annuelle + "$</strong>, soit <strong>" + assurance_mensuelle + "$</strong> par mois.";
+            }
+        }
+    
+        resultat();
+    
+        soumission.addEventListener('change', function() {
+            const soumission = document.getElementById('soumission').value;
+    
+            if (soumission === 'non') {
+                terminer_resultat.innerHTML = "Merci d'avoir utilisé notre service et à bientôt!";
+            } else if (soumission === 'oui') {
+                window.location.href = 'index.html';
+            }
+        });
+    
+    </script>
+    
+</body>
+</html>
